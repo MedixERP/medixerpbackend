@@ -1165,6 +1165,44 @@ namespace PharmacyERP.Infrastructure.Migrations
                     b.ToTable("Units", (string)null);
                 });
 
+            modelBuilder.Entity("PharmacyERP.Domain.Entities.UserSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("ProfileImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Theme")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserSettings");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
@@ -1490,6 +1528,22 @@ namespace PharmacyERP.Infrastructure.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("SalesReturn");
+                });
+
+            modelBuilder.Entity("PharmacyERP.Domain.Entities.UserSettings", b =>
+                {
+                    b.HasOne("PharmacyERP.Domain.Entities.ApplicationUser", "User")
+                        .WithOne("Settings")
+                        .HasForeignKey("PharmacyERP.Domain.Entities.UserSettings", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PharmacyERP.Domain.Entities.ApplicationUser", b =>
+                {
+                    b.Navigation("Settings");
                 });
 
             modelBuilder.Entity("PharmacyERP.Domain.Entities.Category", b =>

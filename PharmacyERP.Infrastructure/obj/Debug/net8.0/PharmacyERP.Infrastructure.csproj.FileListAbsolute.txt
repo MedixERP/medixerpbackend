@@ -36,3 +36,4 @@ F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP.Infrastructure\bin\Debu
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP.Infrastructure\bin\Debug\net8.0\LatoFont\Lato-Thin.ttf
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP.Infrastructure\bin\Debug\net8.0\LatoFont\Lato-ThinItalic.ttf
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP.Infrastructure\bin\Debug\net8.0\LatoFont\OFL.txt
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP.Infrastructure\obj\Debug\net8.0\PharmacyERP.Infrastructure.sourcelink.json

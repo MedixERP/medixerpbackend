@@ -18,9 +18,8 @@ public class AuthService : IAuthService
         _uow = uow;
     }
 
-    public async Task<string> LoginAsync(
-        string email,
-        string password)
+    
+    public async Task<string> LoginAsync(string email, string password)
     {
         var user = await _userManager.FindByEmailAsync(email);
 
@@ -30,36 +29,30 @@ public class AuthService : IAuthService
         if (!user.IsActive)
             throw new Exception("User disabled");
 
-        var check =
-            await _userManager.CheckPasswordAsync(
-                user,
-                password);
+        var check = await _userManager.CheckPasswordAsync(user, password);
 
         if (!check)
             throw new Exception("Invalid credentials");
 
-        var roles =
-            await _userManager.GetRolesAsync(user);
+        var roles = await _userManager.GetRolesAsync(user);
 
-        return _jwtService.GenerateToken(
-            user,
-            roles);
+        return _jwtService.GenerateToken(user, roles);
     }
 
     public async Task<ApplicationUser> RegisterAsync(
         string email,
         string password,
         string fullName,
+        string phone,
         string role)
     {
-        var allowedRoles =
-            new[]
-            {
-                "Admin",
-                "Pharmacist",
-                "Cashier",
-                "Customer"
-            };
+        var allowedRoles = new[]
+        {
+            "Admin",
+            "Pharmacist",
+            "Cashier",
+            "Customer"
+        };
 
         if (!allowedRoles.Contains(role))
             throw new Exception("Invalid role");
@@ -69,36 +62,39 @@ public class AuthService : IAuthService
             Email = email,
             UserName = email,
             FullName = fullName,
+            PhoneNumber = phone,
             IsActive = true
         };
 
-        var result =
-            await _userManager.CreateAsync(
-                user,
-                password);
+        var result = await _userManager.CreateAsync(user, password);
 
         if (!result.Succeeded)
         {
             throw new Exception(
-                string.Join(
-                    ",",
-                    result.Errors.Select(x => x.Description)));
+                string.Join(",", result.Errors.Select(x => x.Description)));
         }
 
-        await _userManager.AddToRoleAsync(
-            user,
-            role);
+        await _userManager.AddToRoleAsync(user, role);
+
+        
+        var settings = new UserSettings
+        {
+            UserId = user.Id,
+            Language = "en",
+            Theme = "light",
+            ProfileImageUrl = null
+        };
+
+        await _uow.UserSettings.AddAsync(settings);
+        await _uow.SaveChangesAsync();
 
         return user;
     }
 
-    public async Task<bool> IsUserInRoleAsync(
-        ApplicationUser user,
-        string role)
+ 
+    public async Task<bool> IsUserInRoleAsync(ApplicationUser user, string role)
     {
-        var roles =
-            await _userManager.GetRolesAsync(user);
-
+        var roles = await _userManager.GetRolesAsync(user);
         return roles.Contains(role);
     }
 }

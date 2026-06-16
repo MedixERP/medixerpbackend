@@ -1261,6 +1261,90 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "PharmacyERP.API.Controllers.SettingsController",
+    "Method": "UploadAvatar",
+    "RelativePath": "api/Settings/avatar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "File",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PharmacyERP.API.Controllers.SettingsController",
+    "Method": "ChangePassword",
+    "RelativePath": "api/Settings/change-password",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "ChangePasswordCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PharmacyERP.API.Controllers.SettingsController",
+    "Method": "GetPreferences",
+    "RelativePath": "api/Settings/preferences",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PharmacyERP.API.Controllers.SettingsController",
+    "Method": "UpdatePreferences",
+    "RelativePath": "api/Settings/preferences",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "UpdatePreferencesCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PharmacyERP.API.Controllers.SettingsController",
+    "Method": "GetProfile",
+    "RelativePath": "api/Settings/profile",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PharmacyERP.API.Controllers.SettingsController",
+    "Method": "UpdateProfile",
+    "RelativePath": "api/Settings/profile",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "UpdateProfileCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "PharmacyERP.API.Controllers.SuppliersController",
     "Method": "Add",
     "RelativePath": "api/Suppliers",

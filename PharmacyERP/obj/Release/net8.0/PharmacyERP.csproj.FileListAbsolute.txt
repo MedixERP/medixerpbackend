@@ -227,3 +227,11 @@ F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\refi
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\PharmacyERP.pdb
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\PharmacyERP.genruntimeconfig.cache
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\ref\PharmacyERP.dll
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\PharmacyERP.sourcelink.json
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\bin\Release\net8.0\PharmacyERP.staticwebassets.runtime.json
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\bin\Release\net8.0\Microsoft.Extensions.Configuration.FileExtensions.dll
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\bin\Release\net8.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\bin\Release\net8.0\Microsoft.Extensions.Hosting.Abstractions.dll
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\bin\Release\net8.0\Microsoft.Extensions.Logging.Debug.dll
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\bin\Release\net8.0\Microsoft.Extensions.ObjectPool.dll
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\bin\Release\net8.0\SixLabors.ImageSharp.dll

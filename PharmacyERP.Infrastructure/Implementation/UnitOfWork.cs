@@ -17,6 +17,8 @@ public class UnitOfWork : IUnitOfWork
 
     public IDashboardRepository Dashboard { get; }
 
+    public IUserSettingsRepository UserSettings { get; } 
+
     public IExportService Export { get; }
 
     public UnitOfWork(
@@ -29,7 +31,8 @@ public class UnitOfWork : IUnitOfWork
         IProcurementRepository procurement,
         IProductBatchRepository productBatches,
         IDashboardRepository dashboard,
-        IExportService export)
+        IExportService export,
+        IUserSettingsRepository userSettings) 
     {
         _context = context;
 
@@ -43,16 +46,16 @@ public class UnitOfWork : IUnitOfWork
         Dashboard = dashboard;
 
         Export = export;
+
+        UserSettings = userSettings; 
     }
 
     public IGenericRepository<T> Repository<T>() where T : class
         => new GenericRepository<T>(_context);
 
-    public async Task<int> SaveChangesAsync(
-        CancellationToken cancellationToken = default)
+    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         => await _context.SaveChangesAsync(cancellationToken);
+
     public async Task<IDbContextTransaction> BeginTransactionAsync()
-    {
-        return await _context.Database.BeginTransactionAsync();
-    }
+        => await _context.Database.BeginTransactionAsync();
 }

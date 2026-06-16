@@ -34,6 +34,7 @@ public class RegisterHandler : IRequestHandler<RegisterCommand, Result<string>>
                 request.Email,
                 request.Password,
                 request.FullName,
+                request.Phone,
                 request.Role);
 
             return Result<string>.Success(

@@ -10,6 +10,7 @@ public interface IAuthService
         string email,
         string password,
         string fullName,
+        string phone, 
         string role);
 
     Task<bool> IsUserInRoleAsync(ApplicationUser user, string role);

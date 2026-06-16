@@ -8,7 +8,6 @@ using PharmacyERP.Application.Common.Behaviors;
 using PharmacyERP.Application.Common.Interfaces;
 using PharmacyERP.Application.Common.Interfaces.Repositories;
 using PharmacyERP.Domain.Entities;
-using PharmacyERP.Infrastructure;
 using PharmacyERP.Infrastructure.Persistence;
 using PharmacyERP.Infrastructure.Repositories;
 using PharmacyERP.Infrastructure.Services;
@@ -23,22 +22,36 @@ namespace PharmacyERP
         {
             var builder = WebApplication.CreateBuilder(args);
 
-          
             QuestPDF.Settings.License = LicenseType.Community;
 
-           
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy
+                        .AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("PharmacyERP"));
+                    builder.Configuration.GetConnectionString("PharmacyERP"),
+                    sqlOptions =>
+                    {
+                        sqlOptions.EnableRetryOnFailure(
+                            maxRetryCount: 5,
+                            maxRetryDelay: TimeSpan.FromSeconds(10),
+                            errorNumbersToAdd: null);
+                    });
             });
 
-          
             builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>(options =>
             {
                 options.User.RequireUniqueEmail = true;
@@ -52,17 +65,15 @@ namespace PharmacyERP
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
-           
             builder.Services.AddMediatR(typeof(RegisterHandler).Assembly);
 
-           
             builder.Services.AddValidatorsFromAssemblies(
-      AppDomain.CurrentDomain.GetAssemblies());
+                AppDomain.CurrentDomain.GetAssemblies());
 
             builder.Services.AddTransient(
                 typeof(IPipelineBehavior<,>),
                 typeof(ValidationBehavior<,>));
-           
+
             var jwtSettings = builder.Configuration.GetSection("Jwt");
             var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
 
@@ -89,7 +100,6 @@ namespace PharmacyERP
                 };
             });
 
-           
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -100,26 +110,36 @@ namespace PharmacyERP
             builder.Services.AddScoped<IProductBatchRepository, ProductBatchRepository>();
             builder.Services.AddScoped<IProcurementRepository, ProcurementRepository>();
             builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+            builder.Services.AddScoped<IUserSettingsRepository, UserSettingsRepository>();
 
+            // Services
             builder.Services.AddScoped<IExportService, ExportService>();
             builder.Services.AddScoped<IBarcodeService, BarcodeService>();
             builder.Services.AddScoped<IJwtService, JwtService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IAuthService, AuthService>();
-
+            builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.AddSingleton<ICartService, CartService>();
 
             builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();
 
-         
             using (var scope = app.Services.CreateScope())
             {
-                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
-                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+                var roleManager =
+                    scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
 
-                string[] roles = { "Admin", "Pharmacist", "Cashier", "Customer" };
+                var userManager =
+                    scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+                string[] roles =
+                {
+                    "Admin",
+                    "Pharmacist",
+                    "Cashier",
+                    "Customer"
+                };
 
                 foreach (var role in roles)
                 {
@@ -139,30 +159,49 @@ namespace PharmacyERP
                         UserName = adminEmail,
                         Email = adminEmail,
                         FullName = "System Admin",
+                        PhoneNumber = "01110873153",
                         IsActive = true
                     };
 
-                    await userManager.CreateAsync(user, adminPassword);
-                    await userManager.AddToRoleAsync(user, "Admin");
+                    var result = await userManager.CreateAsync(user, adminPassword);
+
+                    if (result.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(user, "Admin");
+                    }
                 }
+                else
+                {
+                    admin.FullName = "System Admin";
+                    admin.PhoneNumber = "01110873153";
+                    admin.IsActive = true;
+
+                    await userManager.UpdateAsync(admin);
+
+                    if (!await userManager.IsInRoleAsync(admin, "Admin"))
+                    {
+                        await userManager.AddToRoleAsync(admin, "Admin");
+                    }
+                }
+
+                if (app.Environment.IsDevelopment())
+                {
+                    app.UseDeveloperExceptionPage();
+                    app.UseSwagger();
+                    app.UseSwaggerUI();
+                }
+
+                app.UseHttpsRedirection();
+
+                app.UseCors("AllowAll");
+
+                app.UseAuthentication();
+                app.UseAuthorization();
+
+                app.MapControllers();
+
+                app.Run();
             }
-
-           
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.MapControllers();
-
-            app.Run();
         }
     }
 }

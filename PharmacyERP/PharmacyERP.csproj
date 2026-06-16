@@ -20,6 +20,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="QuestPDF" Version="2026.2.4" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.8" />
   </ItemGroup>
@@ -27,6 +28,10 @@
   <ItemGroup>
     <ProjectReference Include="..\PharmacyERP.Application\PharmacyERP.Application.csproj" />
     <ProjectReference Include="..\PharmacyERP.Infrastructure\PharmacyERP.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\avatars\" />
   </ItemGroup>
 
 </Project>

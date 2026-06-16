@@ -15,6 +15,7 @@ public interface IUnitOfWork
     IDashboardRepository Dashboard { get; }
 
     IExportService Export { get; }
+    IUserSettingsRepository UserSettings { get; }
 
 
     IGenericRepository<T> Repository<T>() where T : class;

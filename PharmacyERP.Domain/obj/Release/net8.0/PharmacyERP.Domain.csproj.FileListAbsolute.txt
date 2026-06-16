@@ -31,3 +31,4 @@ F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP.Domain\obj\Release\net8
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP.Domain\obj\Release\net8.0\PharmacyERP.Domain.pdb
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP.Domain\obj\Release\net8.0\PharmacyERP.Domain.genruntimeconfig.cache
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP.Domain\obj\Release\net8.0\ref\PharmacyERP.Domain.dll
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP.Domain\obj\Release\net8.0\PharmacyERP.Domain.sourcelink.json

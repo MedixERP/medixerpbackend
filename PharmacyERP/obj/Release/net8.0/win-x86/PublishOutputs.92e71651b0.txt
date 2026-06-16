@@ -52,12 +52,17 @@ F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\Microsoft.EntityFrameworkCore.Relational.dll
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\Microsoft.EntityFrameworkCore.SqlServer.dll
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\Microsoft.Extensions.Caching.Memory.dll
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\Microsoft.Extensions.Configuration.FileExtensions.dll
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\Microsoft.Extensions.DependencyInjection.dll
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\Microsoft.Extensions.Diagnostics.Abstractions.dll
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\Microsoft.Extensions.Hosting.Abstractions.dll
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\Microsoft.Extensions.Identity.Core.dll
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\Microsoft.Extensions.Identity.Stores.dll
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\Microsoft.Extensions.Logging.dll
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\Microsoft.Extensions.Logging.Abstractions.dll
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\Microsoft.Extensions.Logging.Debug.dll
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\Microsoft.Extensions.ObjectPool.dll
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\Microsoft.Extensions.Options.dll
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\Microsoft.Identity.Client.dll
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\Microsoft.Identity.Client.Extensions.Msal.dll
@@ -74,6 +79,7 @@ F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\QuestPDF.dll
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\RBush.dll
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\SixLabors.Fonts.dll
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\SixLabors.ImageSharp.dll
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\SkiaSharp.dll
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\Swashbuckle.AspNetCore.Swagger.dll
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Release\net8.0\win-x86\PubTmp\Out\Swashbuckle.AspNetCore.SwaggerGen.dll
