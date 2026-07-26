@@ -1,7 +1,11 @@
-﻿using FluentValidation;
+﻿using Application.Common.Interfaces;
+using FluentValidation;
+using Infrastructure.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PharmacyERP.Application.Common.Behaviors;
@@ -13,6 +17,8 @@ using PharmacyERP.Infrastructure.Repositories;
 using PharmacyERP.Infrastructure.Services;
 using QuestPDF.Infrastructure;
 using System.Text;
+using System.Text.Json;
+using System.Threading.RateLimiting;
 
 namespace PharmacyERP
 {
@@ -50,6 +56,60 @@ namespace PharmacyERP
                             maxRetryDelay: TimeSpan.FromSeconds(10),
                             errorNumbersToAdd: null);
                     });
+            });
+
+            builder.Services.AddHealthChecks()
+                .AddDbContextCheck<ApplicationDbContext>(
+                    name: "database",
+                    tags: new[] { "db", "sql" });
+
+            builder.Services.AddDistributedMemoryCache();
+
+            builder.Services.AddRateLimiter(options =>
+            {
+                options.RejectionStatusCode = StatusCodes.Status503ServiceUnavailable;
+
+                options.AddConcurrencyLimiter("global", opt =>
+                {
+                    opt.PermitLimit = 20;
+                    opt.QueueLimit = 30;
+                    opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                });
+
+                options.AddConcurrencyLimiter("heavy", opt =>
+                {
+                    opt.PermitLimit = 5;
+                    opt.QueueLimit = 10;
+                    opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                });
+
+                options.AddPolicy("login", context =>
+                    RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 5,
+                            Window = TimeSpan.FromMinutes(1),
+                            QueueLimit = 0
+                        }));
+
+                options.AddPolicy("register", context =>
+                    RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 10,
+                            Window = TimeSpan.FromMinutes(1),
+                            QueueLimit = 0
+                        }));
+
+                options.OnRejected = async (context, token) =>
+                {
+                    context.HttpContext.Response.ContentType = "application/json";
+                    await context.HttpContext.Response.WriteAsync(
+                        "{\"message\":\"Too many requests, please try again shortly.\"}",
+                        token);
+                };
             });
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>(options =>
@@ -112,13 +172,13 @@ namespace PharmacyERP
             builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
             builder.Services.AddScoped<IUserSettingsRepository, UserSettingsRepository>();
 
-            // Services
             builder.Services.AddScoped<IExportService, ExportService>();
             builder.Services.AddScoped<IBarcodeService, BarcodeService>();
             builder.Services.AddScoped<IJwtService, JwtService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IFileService, FileService>();
+            builder.Services.AddScoped<ICacheService, RedisCacheService>();
             builder.Services.AddSingleton<ICartService, CartService>();
 
             builder.Services.AddHttpContextAccessor();
@@ -134,12 +194,13 @@ namespace PharmacyERP
                     scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
                 string[] roles =
-                {
-                    "Admin",
-                    "Pharmacist",
-                    "Cashier",
-                    "Customer"
-                };
+{
+    "Admin",
+    "Pharmacist",
+    "Cashier",
+    "Customer",
+    "PharmacyCompany"
+};
 
                 foreach (var role in roles)
                 {
@@ -198,7 +259,35 @@ namespace PharmacyERP
                 app.UseAuthentication();
                 app.UseAuthorization();
 
-                app.MapControllers();
+                app.UseRateLimiter();
+
+                app.MapControllers()
+                   .RequireRateLimiting("global");
+
+                app.MapHealthChecks("/health", new HealthCheckOptions
+                {
+                    ResponseWriter = async (context, report) =>
+                    {
+                        context.Response.ContentType = "application/json";
+
+                        var response = new
+                        {
+                            status = report.Status.ToString(),
+                            checks = report.Entries.Select(e => new
+                            {
+                                name = e.Key,
+                                status = e.Value.Status.ToString(),
+                                description = e.Value.Description,
+                                duration = e.Value.Duration.TotalMilliseconds
+                            }),
+                            totalDuration = report.TotalDuration.TotalMilliseconds
+                        };
+
+                        await context.Response.WriteAsync(
+                            JsonSerializer.Serialize(response));
+                    }
+                });
+                
 
                 app.Run();
             }

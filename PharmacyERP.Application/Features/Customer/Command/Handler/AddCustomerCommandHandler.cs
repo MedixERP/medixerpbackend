@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using Application.Common.Interfaces;
+using MediatR;
+using PharmacyERP.Application.Common.Interfaces;
 using PharmacyERP.Application.Common.Models;
 using PharmacyERP.Domain.Entities;
 
@@ -6,10 +8,12 @@ public class AddCustomerCommandHandler
     : IRequestHandler<AddCustomerCommand, Result<int>>
 {
     private readonly IUnitOfWork _uow;
+    private readonly ICacheService _cache;
 
-    public AddCustomerCommandHandler(IUnitOfWork uow)
+    public AddCustomerCommandHandler(IUnitOfWork uow, ICacheService cache)
     {
         _uow = uow;
+        _cache = cache;
     }
 
     public async Task<Result<int>> Handle(
@@ -25,7 +29,6 @@ public class AddCustomerCommandHandler
         var phone = request.Phone.Trim();
 
         var exists = await _uow.Customers.IsPhoneExistsAsync(phone);
-
         if (exists)
             return Result<int>.Failure("Phone already exists", 400);
 
@@ -42,6 +45,8 @@ public class AddCustomerCommandHandler
 
         await _uow.Customers.AddAsync(customer);
         await _uow.SaveChangesAsync(cancellationToken);
+
+        await _cache.RemoveByPatternAsync("customers:*", cancellationToken);
 
         return Result<int>.Success(customer.Id, "Customer added successfully");
     }

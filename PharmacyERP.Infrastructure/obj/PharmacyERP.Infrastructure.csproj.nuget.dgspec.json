@@ -133,11 +133,6 @@
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.310/PortableRuntimeIdentifierGraph.json"
         }
-      },
-      "runtimes": {
-        "win-x86": {
-          "#import": []
-        }
       }
     },
     "F:\\ASP.NET Projects\\Pharmacy ERP\\PharmacyERP\\PharmacyERP.Domain\\PharmacyERP.Domain.csproj": {
@@ -249,11 +244,6 @@
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.310/PortableRuntimeIdentifierGraph.json"
         }
-      },
-      "runtimes": {
-        "win-x86": {
-          "#import": []
-        }
       }
     },
     "F:\\ASP.NET Projects\\Pharmacy ERP\\PharmacyERP\\PharmacyERP.Infrastructure\\PharmacyERP.Infrastructure.csproj": {
@@ -341,6 +331,10 @@
               "target": "Package",
               "version": "[8.0.10, )"
             },
+            "Microsoft.Extensions.Caching.StackExchangeRedis": {
+              "target": "Package",
+              "version": "[8.0.10, )"
+            },
             "QRCoder": {
               "target": "Package",
               "version": "[1.8.0, )"
@@ -375,11 +369,6 @@
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.310/PortableRuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "win-x86": {
-          "#import": []
         }
       }
     }

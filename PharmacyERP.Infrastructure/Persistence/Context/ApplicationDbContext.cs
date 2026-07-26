@@ -32,6 +32,9 @@ public class ApplicationDbContext
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<AuditLog> AuditLogs { get; set; }
     public DbSet<UserSettings> UserSettings { get; set; }
+    public DbSet<PharmacyCompany> PharmacyCompanies { get; set; }
+    public DbSet<DrugOrder> DrugOrders { get; set; }
+    public DbSet<DrugOrderItem> DrugOrderItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

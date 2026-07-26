@@ -1,12 +1,14 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace PharmacyERP.Controllers;
 
 [ApiController]
 [Route("api/export")]
 [Authorize]
+[EnableRateLimiting("heavy")]
 public class ExportController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -16,7 +18,6 @@ public class ExportController : ControllerBase
         _mediator = mediator;
     }
 
-    
     [HttpGet("invoices")]
     [Authorize(Roles = "Admin,Pharmacist")]
     public async Task<IActionResult> ExportInvoices([FromQuery] string format = "pdf")
@@ -30,7 +31,6 @@ public class ExportController : ControllerBase
             $"Invoices.{(format.ToLower() == "excel" ? "xlsx" : "pdf")}");
     }
 
-   
     [HttpGet("products")]
     [Authorize(Roles = "Admin,Pharmacist")]
     public async Task<IActionResult> ExportProducts([FromQuery] string format = "pdf")
@@ -44,7 +44,6 @@ public class ExportController : ControllerBase
             $"Products.{(format.ToLower() == "excel" ? "xlsx" : "pdf")}");
     }
 
-    
     [HttpGet("purchase-orders")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> ExportPurchaseOrders([FromQuery] string format = "pdf")
@@ -58,7 +57,6 @@ public class ExportController : ControllerBase
             $"PurchaseOrders.{(format.ToLower() == "excel" ? "xlsx" : "pdf")}");
     }
 
-    
     [HttpGet("customers")]
     [Authorize(Roles = "Admin,Cashier")]
     public async Task<IActionResult> ExportCustomers([FromQuery] string format = "pdf")
@@ -72,7 +70,6 @@ public class ExportController : ControllerBase
             $"Customers.{(format.ToLower() == "excel" ? "xlsx" : "pdf")}");
     }
 
-  
     [HttpGet("suppliers")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> ExportSuppliers([FromQuery] string format = "pdf")
@@ -86,7 +83,6 @@ public class ExportController : ControllerBase
             $"Suppliers.{(format.ToLower() == "excel" ? "xlsx" : "pdf")}");
     }
 
-   
     [HttpGet("expired-batches")]
     [Authorize(Roles = "Admin,Pharmacist")]
     public async Task<IActionResult> ExportExpiredBatches([FromQuery] string format = "pdf")
@@ -100,7 +96,6 @@ public class ExportController : ControllerBase
             $"ExpiredBatches.{(format.ToLower() == "excel" ? "xlsx" : "pdf")}");
     }
 
-   
     [HttpGet("low-stock")]
     [Authorize(Roles = "Admin,Pharmacist")]
     public async Task<IActionResult> ExportLowStock([FromQuery] string format = "pdf")
@@ -114,7 +109,6 @@ public class ExportController : ControllerBase
             $"LowStockProducts.{(format.ToLower() == "excel" ? "xlsx" : "pdf")}");
     }
 
-    
     [HttpGet("monthly-sales")]
     [Authorize(Roles = "Admin,Cashier")]
     public async Task<IActionResult> ExportMonthlySales([FromQuery] string format = "pdf")

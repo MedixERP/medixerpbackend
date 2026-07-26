@@ -234,3 +234,10 @@ F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\bin\Debug\net8.0\Micros
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\bin\Debug\net8.0\Microsoft.Extensions.ObjectPool.dll
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\bin\Debug\net8.0\SixLabors.ImageSharp.dll
 F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\bin\Debug\net8.0\PharmacyERP.staticwebassets.runtime.json
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\bin\Debug\net8.0\Microsoft.Extensions.Caching.StackExchangeRedis.dll
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\bin\Debug\net8.0\Pipelines.Sockets.Unofficial.dll
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\bin\Debug\net8.0\StackExchange.Redis.dll
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\bin\Debug\net8.0\Microsoft.Extensions.Diagnostics.HealthChecks.dll
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\bin\Debug\net8.0\Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions.dll
+F:\ASP.NET Projects\Pharmacy ERP\PharmacyERP\PharmacyERP\bin\Debug\net8.0\Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore.dll

@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Application.Common.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using PharmacyERP.Application.Common.Interfaces;
@@ -10,13 +11,16 @@ public class GetAllProductsQueryHandler
 {
     private readonly IUnitOfWork _uow;
     private readonly IHttpContextAccessor _http;
+    private readonly ICacheService _cache;
 
     public GetAllProductsQueryHandler(
         IUnitOfWork uow,
-        IHttpContextAccessor http)
+        IHttpContextAccessor http,
+        ICacheService cache)
     {
         _uow = uow;
         _http = http;
+        _cache = cache;
     }
 
     public async Task<Result<PaginatedResult<ProductDto>>> Handle(
@@ -37,11 +41,21 @@ public class GetAllProductsQueryHandler
                 .Failure("Forbidden", 403);
         }
 
-        
         var pageNumber = request.PageNumber <= 0 ? 1 : request.PageNumber;
         var pageSize = request.PageSize <= 0 ? 10 : request.PageSize;
 
-      
+        var cacheKey =
+            $"products:{pageNumber}:{pageSize}:{request.Keyword}:{request.CategoryId}:{request.IsLowStock}:{request.SortBy}:{request.SortDirection}";
+
+        var cachedData =
+            await _cache.GetAsync<PaginatedResult<ProductDto>>(cacheKey, cancellationToken);
+
+        if (cachedData is not null)
+        {
+            return Result<PaginatedResult<ProductDto>>
+                .Success(cachedData, "Products retrieved from cache");
+        }
+
         var query = _uow.Repository<Product>()
             .Query()
             .AsNoTracking()
@@ -49,7 +63,6 @@ public class GetAllProductsQueryHandler
             .Include(x => x.ProductBatches)
             .Where(x => !x.IsDeleted);
 
-       
         if (!string.IsNullOrWhiteSpace(request.Keyword))
         {
             var keyword = request.Keyword.Trim();
@@ -60,22 +73,19 @@ public class GetAllProductsQueryHandler
                 x.Barcode.Contains(keyword));
         }
 
-       
         if (request.CategoryId.HasValue)
         {
             query = query.Where(x =>
                 x.CategoryId == request.CategoryId.Value);
         }
 
-        
-        if (request.IsLowStock.HasValue && request.IsLowStock.Value)
+        if (request.IsLowStock == true)
         {
             query = query.Where(x =>
                 (x.ProductBatches.Sum(b => (int?)b.Quantity) ?? 0)
                 <= x.MinStockLevel);
         }
 
-       
         query = request.SortBy?.ToLower() switch
         {
             "price" => request.SortDirection == "desc"
@@ -95,10 +105,8 @@ public class GetAllProductsQueryHandler
             _ => query.OrderByDescending(x => x.CreatedAt)
         };
 
-      
         var totalCount = await query.CountAsync(cancellationToken);
 
-       
         var products = await query
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
@@ -124,13 +132,17 @@ public class GetAllProductsQueryHandler
             })
             .ToListAsync(cancellationToken);
 
-        
         var paginatedResult = new PaginatedResult<ProductDto>(
             products,
             totalCount,
             pageNumber,
-            pageSize
-        );
+            pageSize);
+
+        await _cache.SetAsync(
+            cacheKey,
+            paginatedResult,
+            TimeSpan.FromMinutes(10),
+            cancellationToken);
 
         return Result<PaginatedResult<ProductDto>>
             .Success(paginatedResult, "Products retrieved successfully");

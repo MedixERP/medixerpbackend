@@ -1,5 +1,7 @@
-﻿using MediatR;
+﻿using Application.Common.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Http;
+using PharmacyERP.Application.Common.Interfaces;
 using PharmacyERP.Application.Common.Models;
 
 public class UpdateCustomerCommandHandler
@@ -7,13 +9,16 @@ public class UpdateCustomerCommandHandler
 {
     private readonly IUnitOfWork _uow;
     private readonly IHttpContextAccessor _http;
+    private readonly ICacheService _cache;
 
     public UpdateCustomerCommandHandler(
         IUnitOfWork uow,
-        IHttpContextAccessor http)
+        IHttpContextAccessor http,
+        ICacheService cache)
     {
         _uow = uow;
         _http = http;
+        _cache = cache;
     }
 
     public async Task<Result<string>> Handle(
@@ -21,7 +26,6 @@ public class UpdateCustomerCommandHandler
         CancellationToken cancellationToken)
     {
         var user = _http.HttpContext?.User;
-
         if (user == null || !user.Identity!.IsAuthenticated)
             return Result<string>.Failure("Unauthorized", 401);
 
@@ -29,7 +33,6 @@ public class UpdateCustomerCommandHandler
             return Result<string>.Failure("Forbidden", 403);
 
         var customer = await _uow.Customers.GetByIdAsync(request.Id);
-
         if (customer == null || customer.IsDeleted)
             return Result<string>.Failure("Customer not found", 404);
 
@@ -42,7 +45,6 @@ public class UpdateCustomerCommandHandler
         var phone = request.Phone.Trim();
 
         var phoneExists = await _uow.Customers.IsPhoneExistsAsync(phone);
-
         if (phoneExists && customer.Phone != phone)
             return Result<string>.Failure("Phone already exists", 400);
 
@@ -54,8 +56,9 @@ public class UpdateCustomerCommandHandler
         customer.UpdatedAt = DateTime.UtcNow;
 
         _uow.Customers.Update(customer);
-
         await _uow.SaveChangesAsync(cancellationToken);
+
+        await _cache.RemoveByPatternAsync("customers:*", cancellationToken);
 
         return Result<string>.Success("Updated", "Customer updated successfully");
     }

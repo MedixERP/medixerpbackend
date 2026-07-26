@@ -22,5 +22,6 @@ public interface IUnitOfWork
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     Task<IDbContextTransaction> BeginTransactionAsync();
+    Task ExecuteInTransactionAsync(Func<Task> action, CancellationToken cancellationToken = default);
 
 }

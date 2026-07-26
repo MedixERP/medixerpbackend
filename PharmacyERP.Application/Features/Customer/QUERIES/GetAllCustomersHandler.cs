@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Application.Common.Interfaces;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using PharmacyERP.Application.Common.Interfaces;
 using PharmacyERP.Application.Common.Models;
@@ -8,46 +9,53 @@ public class GetAllCustomersHandler
     : IRequestHandler<GetAllCustomersQuery, Result<PaginatedResult<CustomerDto>>>
 {
     private readonly IUnitOfWork _uow;
+    private readonly ICacheService _cache;
 
-    public GetAllCustomersHandler(IUnitOfWork uow)
+    public GetAllCustomersHandler(IUnitOfWork uow, ICacheService cache)
     {
         _uow = uow;
+        _cache = cache;
     }
 
     public async Task<Result<PaginatedResult<CustomerDto>>> Handle(
         GetAllCustomersQuery request,
         CancellationToken cancellationToken)
     {
-       
         var pageNumber = request.PageNumber <= 0 ? 1 : request.PageNumber;
         var pageSize = request.PageSize <= 0 ? 10 : request.PageSize;
 
-      
+        var cacheKey =
+            $"customers:{pageNumber}:{pageSize}:{request.Keyword}:{request.IsVip}";
+
+        var cachedData =
+            await _cache.GetAsync<PaginatedResult<CustomerDto>>(cacheKey, cancellationToken);
+
+        if (cachedData is not null)
+        {
+            return Result<PaginatedResult<CustomerDto>>
+                .Success(cachedData, "Customers retrieved from cache");
+        }
+
         var query = _uow.Customers
             .Query()
             .AsNoTracking()
             .Where(x => !x.IsDeleted);
 
-       
         if (!string.IsNullOrWhiteSpace(request.Keyword))
         {
             var keyword = request.Keyword.Trim();
-
             query = query.Where(x =>
                 x.FullName.Contains(keyword) ||
                 x.Phone.Contains(keyword));
         }
 
-      
         if (request.IsVip.HasValue)
         {
             query = query.Where(x => x.IsVip == request.IsVip.Value);
         }
 
-        
         var totalCount = await query.CountAsync(cancellationToken);
 
-       
         var customers = await query
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
@@ -61,13 +69,18 @@ public class GetAllCustomersHandler
             })
             .ToListAsync(cancellationToken);
 
-        
         var paginatedResult = new PaginatedResult<CustomerDto>(
             customers,
             totalCount,
             pageNumber,
             pageSize
         );
+
+        await _cache.SetAsync(
+            cacheKey,
+            paginatedResult,
+            TimeSpan.FromMinutes(10),
+            cancellationToken);
 
         return Result<PaginatedResult<CustomerDto>>
             .Success(paginatedResult, "Customers retrieved successfully");

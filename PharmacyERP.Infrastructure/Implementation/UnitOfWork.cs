@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using PharmacyERP.Application.Common.Interfaces;
 using PharmacyERP.Application.Common.Interfaces.Repositories;
 using PharmacyERP.Infrastructure.Persistence;
@@ -58,4 +59,24 @@ public class UnitOfWork : IUnitOfWork
 
     public async Task<IDbContextTransaction> BeginTransactionAsync()
         => await _context.Database.BeginTransactionAsync();
+
+    public async Task ExecuteInTransactionAsync(Func<Task> action, CancellationToken cancellationToken = default)
+    {
+        var strategy = _context.Database.CreateExecutionStrategy();
+
+        await strategy.ExecuteAsync(async () =>
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+            try
+            {
+                await action();
+                await transaction.CommitAsync(cancellationToken);
+            }
+            catch
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
+            }
+        });
+    }
 }

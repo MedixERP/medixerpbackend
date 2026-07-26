@@ -18,7 +18,6 @@ public class AuthService : IAuthService
         _uow = uow;
     }
 
-    
     public async Task<string> LoginAsync(string email, string password)
     {
         var user = await _userManager.FindByEmailAsync(email);
@@ -51,7 +50,8 @@ public class AuthService : IAuthService
             "Admin",
             "Pharmacist",
             "Cashier",
-            "Customer"
+            "Customer",
+            "PharmacyCompany"
         };
 
         if (!allowedRoles.Contains(role))
@@ -74,9 +74,30 @@ public class AuthService : IAuthService
                 string.Join(",", result.Errors.Select(x => x.Description)));
         }
 
-        await _userManager.AddToRoleAsync(user, role);
+        var roleResult = await _userManager.AddToRoleAsync(user, role);
 
-        
+        if (!roleResult.Succeeded)
+        {
+            throw new Exception(
+                string.Join(",", roleResult.Errors.Select(x => x.Description)));
+        }
+
+        if (role == "PharmacyCompany")
+        {
+            var company = new PharmacyCompany
+            {
+                Name = fullName,
+                Email = email,
+                Phone = phone,
+                Address = string.Empty,
+                IsActive = true,
+                UserId = user.Id
+            };
+
+            await _uow.Repository<PharmacyCompany>().AddAsync(company);
+        }
+
+        // Create default user settings
         var settings = new UserSettings
         {
             UserId = user.Id,
@@ -86,12 +107,12 @@ public class AuthService : IAuthService
         };
 
         await _uow.UserSettings.AddAsync(settings);
+
         await _uow.SaveChangesAsync();
 
         return user;
     }
 
- 
     public async Task<bool> IsUserInRoleAsync(ApplicationUser user, string role)
     {
         var roles = await _userManager.GetRolesAsync(user);

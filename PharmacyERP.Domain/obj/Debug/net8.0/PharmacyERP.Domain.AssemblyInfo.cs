@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PharmacyERP.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d56d4e6f18f2e0049f0d5c028a11bc878cbcdfa6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1f57d14cd21091b59cccc10f4b479647bd6fe534")]
 [assembly: System.Reflection.AssemblyProductAttribute("PharmacyERP.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PharmacyERP.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
